@@ -1,30 +1,75 @@
 import React, { useState } from "react";
 
 const questions = [
-  "… is reserved",
-  "… is generally trusting",
-  "… tends to be lazy",
-  "… is relaxed, handles stress well",
-  "… has few artistic interests",
-  "… is outgoing, sociable",
-  "… tends to find fault with others",
-  "… does a thorough job",
-  "… gets nervous easily",
-  "… has an active imagination",
+  "Is talkative",
+  "Tends to find fault with others",
+  "Does a thorough job",
+  "Is depressed, blue",
+  "Is original, comes up with new ideas",
+  "Is reserved",
+  "Is helpful and unselfish with others",
+  "Can be somewhat careless",
+  "Is relaxed, handles stress well",
+  "Is curious about many different things",
+  "Is full of energy",
+  "Starts quarrels with others",
+  "Is a reliable worker",
+  "Can be tense",
+  "Is ingenious, a deep thinker",
+  "Generates a lot of enthusiasm",
+  "Has a forgiving nature",
+  "Tends to be disorganized",
+  "Worries a lot",
+  "Has an active imagination",
+  "Tends to be quiet",
+  "Is generally trusting",
+  "Tends to be lazy",
+  "Is emotionally stable, not easily upset",
+  "Is inventive",
+  "Has an assertive personality",
+  "Can be cold and aloof",
+  "Perseveres until the task is finished",
+  "Can be moody",
+  "Values artistic, aesthetic experiences",
+  "Is sometimes shy, inhibited",
+  "Is considerate and kind to almost everyone",
+  "Does things efficiently",
+  "Remains calm in tense situations",
+  "Prefers work that is routine",
+  "Is outgoing, sociable",
+  "Is sometimes rude to others",
+  "Makes plans and follows through with them",
+  "Gets nervous easily",
+  "Likes to reflect, play with ideas",
+  "Has few artistic interests",
+  "Likes to cooperate with others",
+  "Is easily distracted",
+  "Is sophisticated in art, music, or literature"
 ];
 
 const reverseScore = (val) => 6 - val;
 
 const scoringMap = {
-  Extraversion: [[1, true], [6, false]],
-  Agreeableness: [[2, false], [7, true]],
-  Conscientiousness: [[3, true], [8, false]],
-  Neuroticism: [[4, true], [9, false]],
-  Openness: [[5, true], [10, false]],
+  Extraversion: [
+    [1, false], [6, true], [11, false], [16, false], [21, true], [26, false], [31, true], [36, false]
+  ],
+  Agreeableness: [
+    [2, true], [7, false], [12, true], [17, false], [22, false], [27, true], [32, false], [37, true], [42, false]
+  ],
+  Conscientiousness: [
+    [3, false], [8, true], [13, false], [18, true], [23, true], [28, false], [33, false], [38, false], [43, true]
+  ],
+  Neuroticism: [
+    [4, false], [9, true], [14, false], [19, false], [24, true], [29, false], [34, true], [39, false]
+  ],
+  Openness: [
+    [5, false], [10, false], [15, false], [20, false], [25, false], [30, false], [35, true], [40, false], [41, true], [44, false]
+  ]
 };
 
+
 export default function BFI10App() {
-  const [responses, setResponses] = useState(Array(10).fill(3));
+  const [responses, setResponses] = useState(Array(44).fill(3));
   const [scores, setScores] = useState(null);
   const [prompt, setPrompt] = useState("");
 
@@ -38,26 +83,27 @@ export default function BFI10App() {
     const traitScores = {};
     for (const [trait, items] of Object.entries(scoringMap)) {
       const values = items.map(([qIndex, isReversed]) => {
-        const raw = responses[qIndex - 1];
+        const raw = responses[qIndex - 1]; // index is 1-based
         return isReversed ? reverseScore(raw) : raw;
       });
-      traitScores[trait] = (values[0] + values[1]) / 2;
+      traitScores[trait] = values.reduce((a, b) => a + b, 0) / values.length;
     }
-
+  
     setScores(traitScores);
-
-    const promptText = `A user has completed the BFI-10 personality test. Here are their responses:\n\n` +
+  
+    const promptText = `A user has completed the BFI-44 personality test.\n (Here's what each number mean: Disagree strongly- 1, Disagree a little- 2, Neither- 3, Agree a little- 4, Agree strongly- 5)\n Here are their responses:\n\n` +
       responses.map((val, i) => `${i + 1}. ${questions[i]} – ${val}`).join("\n") +
       `\n\nFinal trait scores (out of 5):\n` +
-      Object.entries(traitScores).map(([trait, score]) => `- ${trait}: ${score.toFixed(1)}`).join("\n") +
+      Object.entries(traitScores).map(([trait, score]) => `- ${trait}: ${score.toFixed(2)}`).join("\n") +
       `\n\nMimic this user's personality in all future responses.`;
-
+  
     setPrompt(promptText);
   };
+  
 
   return (
     <div className="min-h-screen bg-neutral-900 text-neutral-100 p-8 text-lg">
-      <h1 className="text-3xl font-bold mb-8 text-center">Mini Big-5 Personality Test</h1>
+      <h1 className="text-3xl font-bold mb-8 text-center">44 item Big-5 Personality Test</h1>
 
       <div className="overflow-x-auto">
         <table className="table-auto w-full text-base border-collapse">
@@ -81,7 +127,7 @@ export default function BFI10App() {
             {questions.map((q, i) => (
               <tr key={i} className="border-b border-neutral-700 hover:bg-neutral-800">
                 <td className="px-4 py-4">
-                {i + 1}. <span className="text-neutral-400">I see myself as someone who</span> {q}
+                {i + 1}. <span className="text-neutral-400">I see myself as someone who...</span> {q}
                 </td>
                 {[1, 2, 3, 4, 5].map((val) => (
                   <td key={val} className="text-center px-4 py-4">
