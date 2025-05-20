@@ -1,0 +1,15 @@
+{
+  "files": {
+    "main.css": "/bfi10-app/static/css/main.09819736.css",
+    "main.js": "/bfi10-app/static/js/main.de2a3597.js",
+    "static/js/453.34774c15.chunk.js": "/bfi10-app/static/js/453.34774c15.chunk.js",
+    "index.html": "/bfi10-app/index.html",
+    "main.09819736.css.map": "/bfi10-app/static/css/main.09819736.css.map",
+    "main.de2a3597.js.map": "/bfi10-app/static/js/main.de2a3597.js.map",
+    "453.34774c15.chunk.js.map": "/bfi10-app/static/js/453.34774c15.chunk.js.map"
+  },
+  "entrypoints": [
+    "static/css/main.09819736.css",
+    "static/js/main.de2a3597.js"
+  ]
+}
