@@ -16,7 +16,38 @@ const questions = [
 
 const reverseScore = (val) => 8 - val;
 
-const narrativeTemplates = { /* unchanged */ };
+const narrativeTemplates = {
+  Extraversion: {
+    high: { text: "You are sociable and active.", example: "You organized a lively group discussion and engaged everyone." },
+    moderatelyHigh: { text: "You are generally sociable, though sometimes reserved.", example: "You join parties and chat, but occasionally step back to observe." },
+    moderatelyLow: { text: "You enjoy smaller gatherings and quieter activities.", example: "You prefer one-on-one conversations over large crowds." },
+    low: { text: "You tend to be introspective and reserved.", example: "You often stay silent at social events, preferring to listen." }
+  },
+  Agreeableness: {
+    high: { text: "You are trusting and cooperative.", example: "You volunteered to help a friend move without hesitation." },
+    moderatelyHigh: { text: "You’re warm but can critically appraise when needed.", example: "You offer support but speak up if you notice a mistake." },
+    moderatelyLow: { text: "You balance kindness with pointing out faults.", example: "You help colleagues but offer constructive feedback." },
+    low: { text: "You may challenge others and compete.", example: "You frequently debate ideas and play devil’s advocate." }
+  },
+  Conscientiousness: {
+    high: { text: "You are organized and self-disciplined.", example: "You created a detailed schedule and followed it meticulously." },
+    moderatelyHigh: { text: "You’re reliable, with occasional spontaneity.", example: "You prepare for deadlines but sometimes improvise." },
+    moderatelyLow: { text: "You plan ahead but can be impulsive.", example: "You set goals but occasionally rush tasks at the last minute." },
+    low: { text: "You may be careless and disorganized.", example: "You often miss appointments and leave tasks unfinished." }
+  },
+  "Emotional Stability": {
+    high: { text: "You are calm and confident.", example: "You remained composed during a crisis, making clear decisions." },
+    moderatelyHigh: { text: "You stay calm but may feel brief stress.", example: "You handled a tight deadline well with only moments of worry." },
+    moderatelyLow: { text: "You manage stress but sometimes feel anxious.", example: "You completed tasks under pressure but had moments of doubt." },
+    low: { text: "You may be moody and easily upset.", example: "You often react strongly to criticism and withdraw when upset." }
+  },
+  Openness: {
+    high: { text: "You are imaginative and curious.", example: "You designed an art project exploring abstract ideas." },
+    moderatelyHigh: { text: "You enjoy creativity but value routine.", example: "You try new recipes but also stick to favorites." },
+    moderatelyLow: { text: "You are open to some new experiences.", example: "You read various genres but return to favorite authors." },
+    low: { text: "You prefer familiar and conventional approaches.", example: "You follow established routines and avoid experimentation." }
+  }
+};
 
 export default function BFI10App() {
   const [responses, setResponses] = useState(Array(10).fill(4));
