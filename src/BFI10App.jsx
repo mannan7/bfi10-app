@@ -17,123 +17,44 @@ const questions = [
 // Reverse-scoring function (scale 1-7)
 const reverseScore = (val) => 8 - val;
 
-// Narrative templates enriched with examples and entertainment counterparts
+// Narrative templates with examples only
 const narrativeTemplates = {
   Extraversion: {
-    high: {
-      text: "You are sociable, assertive, talkative, and active (extraverted and enthusiastic).",
-      example: "You organized a lively group discussion and effortlessly engaged everyone.",
-      character: "Tony Stark (Iron Man)"
-    },
-    moderatelyHigh: {
-      text: "You are generally sociable and energetic, though sometimes reserved.",
-      example: "You join parties and chat, but occasionally take a step back to observe.",
-      character: "Peter Quill (Star-Lord)"
-    },
-    moderatelyLow: {
-      text: "You show some sociability but often prefer quieter activities.",
-      example: "You enjoy small gatherings and one-on-one conversations over big crowds.",
-      character: "Bilbo Baggins"
-    },
-    low: {
-      text: "You tend to be reserved, quiet, and introspective.",
-      example: "You often stay silent at social events, preferring to listen and reflect.",
-      character: "Bruce Wayne (Batman)"
-    }
+    high: { text: "You are sociable and active.", example: "You organized a lively group discussion and engaged everyone." },
+    moderatelyHigh: { text: "You are generally sociable, though sometimes reserved.", example: "You join parties and chat, but occasionally step back to observe." },
+    moderatelyLow: { text: "You enjoy smaller gatherings and quieter activities.", example: "You prefer one-on-one conversations over large crowds." },
+    low: { text: "You tend to be introspective and reserved.", example: "You often stay silent at social events, preferring to listen." }
   },
   Agreeableness: {
-    high: {
-      text: "You are trusting, generous, sympathetic, and cooperative (sympathetic and warm).",
-      example: "You volunteered to help a friend move without hesitation.",
-      character: "Samwise Gamgee"
-    },
-    moderatelyHigh: {
-      text: "You’re mostly warm and cooperative, but can critically appraise when needed.",
-      example: "You offer support but speak up if you notice a mistake in the plan.",
-      character: "Hermione Granger"
-    },
-    moderatelyLow: {
-      text: "You balance kindness with a tendency to point out faults.",
-      example: "You help colleagues but don’t shy away from constructive feedback.",
-      character: "Tyrion Lannister"
-    },
-    low: {
-      text: "You may be critical, quarrelsome, and competitive.",
-      example: "You frequently challenge others’ ideas during debates.",
-      character: "Dr. Gregory House"
-    }
+    high: { text: "You are trusting and cooperative.", example: "You volunteered to help a friend move without hesitation." },
+    moderatelyHigh: { text: "You’re warm but can critically appraise when needed.", example: "You offer support but speak up if you notice a mistake." },
+    moderatelyLow: { text: "You balance kindness with pointing out faults.", example: "You help colleagues but offer constructive feedback." },
+    low: { text: "You may challenge others and compete.", example: "You frequently debate ideas and play devil’s advocate." }
   },
   Conscientiousness: {
-    high: {
-      text: "You are organized, hardworking, responsible, and self-disciplined (dependable).",
-      example: "You created a detailed schedule and followed it meticulously.",
-      character: "Hermione Granger"
-    },
-    moderatelyHigh: {
-      text: "You’re usually reliable and organized, with occasional spontaneity.",
-      example: "You prepare for deadlines but sometimes take breaks to improvise.",
-      character: "Indiana Jones"
-    },
-    moderatelyLow: {
-      text: "You plan ahead but sometimes act more impulsively or carelessly.",
-      example: "You set goals but occasionally rush tasks at the last minute.",
-      character: "Jack Sparrow"
-    },
-    low: {
-      text: "You may be disorganized, careless, and impulsive.",
-      example: "You often miss appointments and leave tasks unfinished.",
-      character: "Deadpool"
-    }
+    high: { text: "You are organized and self-disciplined.", example: "You created a detailed schedule and followed it meticulously." },
+    moderatelyHigh: { text: "You’re reliable, with occasional spontaneity.", example: "You prepare for deadlines but sometimes improvise." },
+    moderatelyLow: { text: "You plan ahead but can be impulsive.", example: "You set goals but occasionally rush tasks at the last minute." },
+    low: { text: "You may be careless and disorganized.", example: "You often miss appointments and leave tasks unfinished." }
   },
   "Emotional Stability": {
-    high: {
-      text: "You are relaxed, confident, and emotionally stable (calm).",
-      example: "You remained composed during a crisis, making clear decisions.",
-      character: "Superman"
-    },
-    moderatelyHigh: {
-      text: "You tend to stay calm and confident but may occasionally feel stressed.",
-      example: "You handled a tight deadline well, with only brief moments of worry.",
-      character: "Katniss Everdeen"
-    },
-    moderatelyLow: {
-      text: "You manage stress fairly well but sometimes feel anxious or moody.",
-      example: "You completed most tasks under pressure but had moments of doubt.",
-      character: "Frodo Baggins"
-    },
-    low: {
-      text: "You may be anxious, moody, and easily upset.",
-      example: "You often react strongly to criticism and withdraw when upset.",
-      character: "Sheldon Cooper"
-    }
+    high: { text: "You are calm and confident.", example: "You remained composed during a crisis, making clear decisions." },
+    moderatelyHigh: { text: "You stay calm but may feel brief stress.", example: "You handled a tight deadline well with only moments of worry." },
+    moderatelyLow: { text: "You manage stress but sometimes feel anxious.", example: "You completed tasks under pressure but had moments of doubt." },
+    low: { text: "You may be moody and easily upset.", example: "You often react strongly to criticism and withdraw when upset." }
   },
   Openness: {
-    high: {
-      text: "You are curious, imaginative, reflective, and creative (open to new experiences).",
-      example: "You designed an original art project exploring abstract ideas.",
-      character: "Doctor Strange"
-    },
-    moderatelyHigh: {
-      text: "You enjoy new ideas and creativity, though you also value routine.",
-      example: "You try new recipes but still stick to your favorite meals regularly.",
-      character: "Alice (Alice in Wonderland)"
-    },
-    moderatelyLow: {
-      text: "You’re open to some new experiences but also prefer familiar approaches.",
-      example: "You read diverse genres but often return to your favorite authors.",
-      character: "Jim Halpert"
-    },
-    low: {
-      text: "You prefer conventional approaches and familiar experiences.",
-      example: "You follow established routines and avoid experimental ideas.",
-      character: "Darth Vader"
-    }
+    high: { text: "You are imaginative and curious.", example: "You designed an art project exploring abstract ideas." },
+    moderatelyHigh: { text: "You enjoy creativity but value routine.", example: "You try new recipes but also stick to favorites." },
+    moderatelyLow: { text: "You are open to some new experiences.", example: "You read various genres but return to favorite authors." },
+    low: { text: "You prefer familiar and conventional approaches.", example: "You follow established routines and avoid experimentation." }
   }
 };
 
 export default function BFI10App() {
   const [responses, setResponses] = useState(Array(10).fill(4));
   const [results, setResults] = useState(null);
+  const [promptText, setPromptText] = useState("");
 
   const handleChange = (index, value) => {
     const updated = [...responses];
@@ -142,82 +63,83 @@ export default function BFI10App() {
   };
 
   const handleSubmit = () => {
-    // Aggregate scores by trait
-    const traitScores = questions.reduce((acc, { trait }) => {
-      acc[trait] = [];
-      return acc;
-    }, {});
+    // Calculate scores
+    const traitScores = {};
+    questions.forEach(({ trait }) => { traitScores[trait] = []; });
     questions.forEach(({ trait, reversed }, idx) => {
       const raw = responses[idx];
       const score = reversed ? reverseScore(raw) : raw;
       traitScores[trait].push(score);
     });
-
-    // Compute mean scores
     const finalScores = {};
-    Object.entries(traitScores).forEach(([trait, vals]) => {
-      finalScores[trait] = vals.reduce((sum, v) => sum + v, 0) / vals.length;
+    Object.entries(traitScores).forEach(([t, arr]) => {
+      finalScores[t] = arr.reduce((a,b) => a+b, 0) / arr.length;
     });
 
-    // Define thresholds
-    const lowThreshold = 4.0;
-    const highThreshold = 5.5;
-    const midThreshold = (lowThreshold + highThreshold) / 2;
-
-    // Generate narrative based on thresholds
+    // Thresholds
+    const lowT = 4.0, highT = 5.5, midT = (lowT + highT) / 2;
     const narrative = {};
-    Object.entries(finalScores).forEach(([trait, score]) => {
-      let category;
-      if (score > highThreshold) category = 'high';
-      else if (score > midThreshold) category = 'moderatelyHigh';
-      else if (score >= lowThreshold) category = 'moderatelyLow';
-      else category = 'low';
-      narrative[trait] = narrativeTemplates[trait][category];
+    Object.entries(finalScores).forEach(([t, s]) => {
+      let cat = s > highT ? 'high' : s > midT ? 'moderatelyHigh' : s >= lowT ? 'moderatelyLow' : 'low';
+      narrative[t] = narrativeTemplates[t][cat];
     });
 
-    setResults({ scores: finalScores, narrative });
+    setResults({ finalScores, narrative });
+
+    // Build prompt
+    const respLines = responses.map((v,i) => `${i+1}. ${questions[i].text}: ${v}`).join(' | ');
+    const scoreLines = Object.entries(finalScores).map(([t,s]) => `${t}: ${s.toFixed(2)}`).join(' | ');
+    const narrLines = Object.entries(narrative).map(([t,n]) => `${t} – ${n.text} Example: ${n.example}`).join('\n');
+    const prompt =
+      `Scale: 1=Disagree strongly, 2=Disagree a little, 3=Neither, 4=Agree a little, 5=Agree strongly, 6=Agree very much, 7=Agree absolutely.\n` +
+      `Responses: ${respLines}\n` +
+      `Scores: ${scoreLines}\nNarrative:\n${narrLines}\n\nAdopt this personality: reflect their language, mimic their examples.`;
+    setPromptText(prompt);
   };
 
   return (
-    <div className="min-h-screen bg-neutral-900 text-neutral-100 p-8">
-      <h1 className="text-3xl font-bold mb-6 text-center">Ten-item Big Five Personality Test (TIPI)</h1>
-      <div className="space-y-4">
-        {questions.map(({ text }, i) => (
-          <div key={i} className="flex items-center">
-            <span className="mr-4 w-1/3">{i+1}. I see myself as: {text}</span>
-            {[1,2,3,4,5,6,7].map(val => (
-              <label key={val} className="mx-2">
-                <input
-                  type="radio"
-                  name={`q${i}`}
-                  value={val}
-                  checked={responses[i] === val}
-                  onChange={() => handleChange(i, val)}
-                  className="accent-blue-400"
-                />
-                <span className="ml-1">{val}</span>
-              </label>
-            ))}
-          </div>
-        ))}
-      </div>
-      <div className="flex justify-center mt-8">
-        <button onClick={handleSubmit} className="bg-blue-500 px-6 py-3 rounded text-white">
-          Compute Scores & Narrative
-        </button>
-      </div>
+    <div className="p-6 bg-neutral-900 text-white">
+      <h1 className="text-2xl mb-4">Ten‐Item TIPI (Gosling et al., 2003)</h1>
+      <p className="mb-4">Scale: 1=Disagree strongly, 2=Disagree a little, 3=Neither, 4=Agree a little, 5=Agree strongly, 6=Agree very much, 7=Agree absolutely.</p>
+
+      {questions.map((q,i) => (
+        <div key={i} className="mb-2">
+          <span>{i+1}. {q.text}</span>
+          {[1,2,3,4,5,6,7].map(v => (
+            <label key={v} className="ml-2">
+              <input
+                type="radio"
+                name={`q${i}`}
+                checked={responses[i]===v}
+                onChange={()=>handleChange(i,v)}
+              /> {v}
+            </label>
+          ))}
+        </div>
+      ))}
+
+      <button onClick={handleSubmit} className="mt-4 p-2 bg-blue-600 rounded">Compute & Generate Prompt</button>
 
       {results && (
-        <div className="mt-8 space-y-8">
-          <h2 className="text-2xl font-semibold">Results</h2>
-          {Object.entries(results.scores).map(([trait, score]) => (
-            <div key={trait} className="bg-neutral-800 p-4 rounded">
-              <h3 className="text-xl mb-2">{trait}: {score.toFixed(2)}</h3>
-              <p>{results.narrative[trait].text}</p>
-              <p className="mt-1"><strong>Example:</strong> {results.narrative[trait].example}</p>
-              <p className="mt-1"><strong>Counterpart:</strong> {results.narrative[trait].character}</p>
+        <div className="mt-6 space-y-4">
+          <h2 className="text-xl">Results</h2>
+          <ul className="list-disc list-inside">
+            {responses.map((v,i) => <li key={i}>Q{i+1}: {v}</li>)}
+          </ul>
+          {Object.entries(results.narrative).map(([t,n]) => (
+            <div key={t} className="pt-2 border-t border-gray-700">
+              <h3 className="font-semibold">{t}: {results.finalScores[t].toFixed(2)}</h3>
+              <p>{n.text}</p>
+              <p className="italic">Example: {n.example}</p>
             </div>
           ))}
+        </div>
+      )}
+
+      {promptText && (
+        <div className="mt-6">
+          <h2 className="text-xl">ChatGPT Prompt</h2>
+          <textarea readOnly value={promptText} className="w-full h-40 bg-gray-800 p-2" />
         </div>
       )}
     </div>
