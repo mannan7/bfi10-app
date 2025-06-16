@@ -183,7 +183,20 @@ Please simulate this user's personality in future interactions.`;
             <th className="p-2 border">#</th>
             <th className="p-2 border text-left">I see myself as:</th>
             {[1,2,3,4,5,6,7].map(v => (
-              <th key={v} className="p-2 border text-center">{v}</th>
+              <th key={v} className="p-2 border text-center">
+                <div className="text-xs font-semibold">{v}</div>
+                <div className="text-[10px] leading-tight mt-1">
+                  {{
+                    1: "Disagree strongly",
+                    2: "Disagree moderately",
+                    3: "Disagree a little",
+                    4: "Neither agree nor disagree",
+                    5: "Agree a little",
+                    6: "Agree moderately",
+                    7: "Agree strongly"
+                  }[v]}
+                </div>
+              </th>
             ))}
           </tr>
         </thead>
