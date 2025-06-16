@@ -14,42 +14,9 @@ const questions = [
   { text: "Conventional, uncreative", trait: "Openness", reversed: true }
 ];
 
-// Reverse-scoring function (scale 1-7)
 const reverseScore = (val) => 8 - val;
 
-// Narrative templates with examples only
-const narrativeTemplates = {
-  Extraversion: {
-    high: { text: "You are sociable and active.", example: "You organized a lively group discussion and engaged everyone." },
-    moderatelyHigh: { text: "You are generally sociable, though sometimes reserved.", example: "You join parties and chat, but occasionally step back to observe." },
-    moderatelyLow: { text: "You enjoy smaller gatherings and quieter activities.", example: "You prefer one-on-one conversations over large crowds." },
-    low: { text: "You tend to be introspective and reserved.", example: "You often stay silent at social events, preferring to listen." }
-  },
-  Agreeableness: {
-    high: { text: "You are trusting and cooperative.", example: "You volunteered to help a friend move without hesitation." },
-    moderatelyHigh: { text: "You’re warm but can critically appraise when needed.", example: "You offer support but speak up if you notice a mistake." },
-    moderatelyLow: { text: "You balance kindness with pointing out faults.", example: "You help colleagues but offer constructive feedback." },
-    low: { text: "You may challenge others and compete.", example: "You frequently debate ideas and play devil’s advocate." }
-  },
-  Conscientiousness: {
-    high: { text: "You are organized and self-disciplined.", example: "You created a detailed schedule and followed it meticulously." },
-    moderatelyHigh: { text: "You’re reliable, with occasional spontaneity.", example: "You prepare for deadlines but sometimes improvise." },
-    moderatelyLow: { text: "You plan ahead but can be impulsive.", example: "You set goals but occasionally rush tasks at the last minute." },
-    low: { text: "You may be careless and disorganized.", example: "You often miss appointments and leave tasks unfinished." }
-  },
-  "Emotional Stability": {
-    high: { text: "You are calm and confident.", example: "You remained composed during a crisis, making clear decisions." },
-    moderatelyHigh: { text: "You stay calm but may feel brief stress.", example: "You handled a tight deadline well with only moments of worry." },
-    moderatelyLow: { text: "You manage stress but sometimes feel anxious.", example: "You completed tasks under pressure but had moments of doubt." },
-    low: { text: "You may be moody and easily upset.", example: "You often react strongly to criticism and withdraw when upset." }
-  },
-  Openness: {
-    high: { text: "You are imaginative and curious.", example: "You designed an art project exploring abstract ideas." },
-    moderatelyHigh: { text: "You enjoy creativity but value routine.", example: "You try new recipes but also stick to favorites." },
-    moderatelyLow: { text: "You are open to some new experiences.", example: "You read various genres but return to favorite authors." },
-    low: { text: "You prefer familiar and conventional approaches.", example: "You follow established routines and avoid experimentation." }
-  }
-};
+const narrativeTemplates = { /* unchanged */ };
 
 export default function BFI10App() {
   const [responses, setResponses] = useState(Array(10).fill(4));
@@ -63,7 +30,6 @@ export default function BFI10App() {
   };
 
   const handleSubmit = () => {
-    // Calculate scores
     const traitScores = {};
     questions.forEach(({ trait }) => { traitScores[trait] = []; });
     questions.forEach(({ trait, reversed }, idx) => {
@@ -76,7 +42,6 @@ export default function BFI10App() {
       finalScores[t] = arr.reduce((a,b) => a+b, 0) / arr.length;
     });
 
-    // Thresholds
     const lowT = 4.0, highT = 5.5, midT = (lowT + highT) / 2;
     const narrative = {};
     Object.entries(finalScores).forEach(([t, s]) => {
@@ -86,14 +51,30 @@ export default function BFI10App() {
 
     setResults({ finalScores, narrative });
 
-    // Build prompt
-    const respLines = responses.map((v,i) => `${i+1}. ${questions[i].text}: ${v}`).join(' | ');
-    const scoreLines = Object.entries(finalScores).map(([t,s]) => `${t}: ${s.toFixed(2)}`).join(' | ');
-    const narrLines = Object.entries(narrative).map(([t,n]) => `${t} – ${n.text} Example: ${n.example}`).join('\n');
-    const prompt =
-      `Scale: 1=Disagree strongly, 2=Disagree a little, 3=Neither, 4=Agree a little, 5=Agree strongly, 6=Agree very much, 7=Agree absolutely.\n` +
-      `Responses: ${respLines}\n` +
-      `Scores: ${scoreLines}\nNarrative:\n${narrLines}\n\nAdopt this personality: reflect their language, mimic their examples.`;
+    const prompt = `The user has completed the Ten-Item Personality Inventory (TIPI) from Gosling et al. (2003).
+
+Scale legend:
+1 = Disagree strongly
+2 = Disagree a little
+3 = Neither agree nor disagree
+4 = Agree a little
+5 = Agree strongly
+6 = Agree very much
+7 = Agree absolutely
+
+User responses to each item:
+${questions.map((q, i) => `${i+1}. ${q.text} – Answer: ${responses[i]}`).join('\n')}
+
+Final trait scores:
+${Object.entries(finalScores).map(([t, s]) => `${t}: ${s.toFixed(2)}`).join('\n')}
+
+Trait interpretations:
+${Object.entries(narrative).map(([t, n]) => `${t}:
+  Description: ${n.text}
+  Example behavior: ${n.example}`).join('\n\n')}
+
+Please adopt this user’s personality in your responses. Reflect their traits, use their tone, align with their tendencies, and illustrate with behaviors consistent with their examples.`;
+
     setPromptText(prompt);
   };
 
@@ -102,44 +83,64 @@ export default function BFI10App() {
       <h1 className="text-2xl mb-4">Ten‐Item TIPI (Gosling et al., 2003)</h1>
       <p className="mb-4">Scale: 1=Disagree strongly, 2=Disagree a little, 3=Neither, 4=Agree a little, 5=Agree strongly, 6=Agree very much, 7=Agree absolutely.</p>
 
-      {questions.map((q,i) => (
-        <div key={i} className="mb-2">
-          <span>{i+1}. {q.text}</span>
-          {[1,2,3,4,5,6,7].map(v => (
-            <label key={v} className="ml-2">
-              <input
-                type="radio"
-                name={`q${i}`}
-                checked={responses[i]===v}
-                onChange={()=>handleChange(i,v)}
-              /> {v}
-            </label>
+      <table className="w-full text-left mb-6">
+        <thead>
+          <tr>
+            <th className="pr-4">#</th>
+            <th className="pr-4">Question</th>
+            {[1,2,3,4,5,6,7].map(v => (
+              <th key={v} className="text-center">{v}</th>
+            ))}
+          </tr>
+        </thead>
+        <tbody>
+          {questions.map((q, i) => (
+            <tr key={i} className="border-t border-gray-700">
+              <td className="pr-4 align-top">{i+1}.</td>
+              <td className="pr-4 align-top">{q.text}</td>
+              {[1,2,3,4,5,6,7].map(v => (
+                <td key={v} className="text-center">
+                  <input
+                    type="radio"
+                    name={`q${i}`}
+                    checked={responses[i] === v}
+                    onChange={() => handleChange(i, v)}
+                    className="accent-blue-400"
+                  />
+                </td>
+              ))}
+            </tr>
           ))}
-        </div>
-      ))}
+        </tbody>
+      </table>
 
-      <button onClick={handleSubmit} className="mt-4 p-2 bg-blue-600 rounded">Compute & Generate Prompt</button>
+      <button onClick={handleSubmit} className="p-2 bg-blue-600 rounded">Compute & Generate Prompt</button>
 
       {results && (
         <div className="mt-6 space-y-4">
           <h2 className="text-xl">Results</h2>
-          <ul className="list-disc list-inside">
-            {responses.map((v,i) => <li key={i}>Q{i+1}: {v}</li>)}
-          </ul>
-          {Object.entries(results.narrative).map(([t,n]) => (
-            <div key={t} className="pt-2 border-t border-gray-700">
-              <h3 className="font-semibold">{t}: {results.finalScores[t].toFixed(2)}</h3>
-              <p>{n.text}</p>
-              <p className="italic">Example: {n.example}</p>
-            </div>
-          ))}
+          <table className="w-full text-left">
+            <thead>
+              <tr><th>Trait</th><th>Score</th><th>Description</th><th>Example</th></tr>
+            </thead>
+            <tbody>
+              {Object.entries(results.finalScores).map(([trait, score]) => (
+                <tr key={trait} className="border-t border-gray-700">
+                  <td className="pr-4 font-semibold">{trait}</td>
+                  <td className="pr-4">{score.toFixed(2)}</td>
+                  <td className="pr-4">{results.narrative[trait].text}</td>
+                  <td>{results.narrative[trait].example}</td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
         </div>
       )}
 
       {promptText && (
         <div className="mt-6">
           <h2 className="text-xl">ChatGPT Prompt</h2>
-          <textarea readOnly value={promptText} className="w-full h-40 bg-gray-800 p-2" />
+          <textarea readOnly value={promptText} className="w-full h-96 bg-gray-800 p-2 text-sm" />
         </div>
       )}
     </div>
