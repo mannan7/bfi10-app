@@ -1,15 +1,15 @@
 {
   "files": {
-    "main.css": "/bfi10-app/static/css/main.1c30aa3c.css",
-    "main.js": "/bfi10-app/static/js/main.4576dc54.js",
+    "main.css": "/bfi10-app/static/css/main.7139ae03.css",
+    "main.js": "/bfi10-app/static/js/main.705d032b.js",
     "static/js/453.34774c15.chunk.js": "/bfi10-app/static/js/453.34774c15.chunk.js",
     "index.html": "/bfi10-app/index.html",
-    "main.1c30aa3c.css.map": "/bfi10-app/static/css/main.1c30aa3c.css.map",
-    "main.4576dc54.js.map": "/bfi10-app/static/js/main.4576dc54.js.map",
+    "main.7139ae03.css.map": "/bfi10-app/static/css/main.7139ae03.css.map",
+    "main.705d032b.js.map": "/bfi10-app/static/js/main.705d032b.js.map",
     "453.34774c15.chunk.js.map": "/bfi10-app/static/js/453.34774c15.chunk.js.map"
   },
   "entrypoints": [
-    "static/css/main.1c30aa3c.css",
-    "static/js/main.4576dc54.js"
+    "static/css/main.7139ae03.css",
+    "static/js/main.705d032b.js"
   ]
 }
