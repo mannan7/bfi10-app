@@ -1,180 +1,223 @@
 import React, { useState } from "react";
 
+// Ten-Item Personality Inventory (TIPI) items (Gosling et al., 2003)
 const questions = [
-  "Is talkative",
-  "Tends to find fault with others",
-  "Does a thorough job",
-  "Is depressed, blue",
-  "Is original, comes up with new ideas",
-  "Is reserved",
-  "Is helpful and unselfish with others",
-  "Can be somewhat careless",
-  "Is relaxed, handles stress well",
-  "Is curious about many different things",
-  "Is full of energy",
-  "Starts quarrels with others",
-  "Is a reliable worker",
-  "Can be tense",
-  "Is ingenious, a deep thinker",
-  "Generates a lot of enthusiasm",
-  "Has a forgiving nature",
-  "Tends to be disorganized",
-  "Worries a lot",
-  "Has an active imagination",
-  "Tends to be quiet",
-  "Is generally trusting",
-  "Tends to be lazy",
-  "Is emotionally stable, not easily upset",
-  "Is inventive",
-  "Has an assertive personality",
-  "Can be cold and aloof",
-  "Perseveres until the task is finished",
-  "Can be moody",
-  "Values artistic, aesthetic experiences",
-  "Is sometimes shy, inhibited",
-  "Is considerate and kind to almost everyone",
-  "Does things efficiently",
-  "Remains calm in tense situations",
-  "Prefers work that is routine",
-  "Is outgoing, sociable",
-  "Is sometimes rude to others",
-  "Makes plans and follows through with them",
-  "Gets nervous easily",
-  "Likes to reflect, play with ideas",
-  "Has few artistic interests",
-  "Likes to cooperate with others",
-  "Is easily distracted",
-  "Is sophisticated in art, music, or literature"
+  { text: "Extraverted, enthusiastic", trait: "Extraversion", reversed: false },
+  { text: "Reserved, quiet", trait: "Extraversion", reversed: true },
+  { text: "Sympathetic, warm", trait: "Agreeableness", reversed: false },
+  { text: "Critical, quarrelsome", trait: "Agreeableness", reversed: true },
+  { text: "Dependable, self-disciplined", trait: "Conscientiousness", reversed: false },
+  { text: "Disorganized, careless", trait: "Conscientiousness", reversed: true },
+  { text: "Anxious, easily upset", trait: "Emotional Stability", reversed: true },
+  { text: "Calm, emotionally stable", trait: "Emotional Stability", reversed: false },
+  { text: "Open to new experiences, complex", trait: "Openness", reversed: false },
+  { text: "Conventional, uncreative", trait: "Openness", reversed: true }
 ];
 
-const reverseScore = (val) => 6 - val;
+// Reverse-scoring function (scale 1-7)
+const reverseScore = (val) => 8 - val;
 
-const scoringMap = {
-  Extraversion: [
-    [1, false], [6, true], [11, false], [16, false], [21, true], [26, false], [31, true], [36, false]
-  ],
-  Agreeableness: [
-    [2, true], [7, false], [12, true], [17, false], [22, false], [27, true], [32, false], [37, true], [42, false]
-  ],
-  Conscientiousness: [
-    [3, false], [8, true], [13, false], [18, true], [23, true], [28, false], [33, false], [38, false], [43, true]
-  ],
-  Neuroticism: [
-    [4, false], [9, true], [14, false], [19, false], [24, true], [29, false], [34, true], [39, false]
-  ],
-  Openness: [
-    [5, false], [10, false], [15, false], [20, false], [25, false], [30, false], [35, true], [40, false], [41, true], [44, false]
-  ]
+// Narrative templates enriched with examples and entertainment counterparts
+const narrativeTemplates = {
+  Extraversion: {
+    high: {
+      text: "You are sociable, assertive, talkative, and active (extraverted and enthusiastic).",
+      example: "You organized a lively group discussion and effortlessly engaged everyone.",
+      character: "Tony Stark (Iron Man)"
+    },
+    moderatelyHigh: {
+      text: "You are generally sociable and energetic, though sometimes reserved.",
+      example: "You join parties and chat, but occasionally take a step back to observe.",
+      character: "Peter Quill (Star-Lord)"
+    },
+    moderatelyLow: {
+      text: "You show some sociability but often prefer quieter activities.",
+      example: "You enjoy small gatherings and one-on-one conversations over big crowds.",
+      character: "Bilbo Baggins"
+    },
+    low: {
+      text: "You tend to be reserved, quiet, and introspective.",
+      example: "You often stay silent at social events, preferring to listen and reflect.",
+      character: "Bruce Wayne (Batman)"
+    }
+  },
+  Agreeableness: {
+    high: {
+      text: "You are trusting, generous, sympathetic, and cooperative (sympathetic and warm).",
+      example: "You volunteered to help a friend move without hesitation.",
+      character: "Samwise Gamgee"
+    },
+    moderatelyHigh: {
+      text: "You’re mostly warm and cooperative, but can critically appraise when needed.",
+      example: "You offer support but speak up if you notice a mistake in the plan.",
+      character: "Hermione Granger"
+    },
+    moderatelyLow: {
+      text: "You balance kindness with a tendency to point out faults.",
+      example: "You help colleagues but don’t shy away from constructive feedback.",
+      character: "Tyrion Lannister"
+    },
+    low: {
+      text: "You may be critical, quarrelsome, and competitive.",
+      example: "You frequently challenge others’ ideas during debates.",
+      character: "Dr. Gregory House"
+    }
+  },
+  Conscientiousness: {
+    high: {
+      text: "You are organized, hardworking, responsible, and self-disciplined (dependable).",
+      example: "You created a detailed schedule and followed it meticulously.",
+      character: "Hermione Granger"
+    },
+    moderatelyHigh: {
+      text: "You’re usually reliable and organized, with occasional spontaneity.",
+      example: "You prepare for deadlines but sometimes take breaks to improvise.",
+      character: "Indiana Jones"
+    },
+    moderatelyLow: {
+      text: "You plan ahead but sometimes act more impulsively or carelessly.",
+      example: "You set goals but occasionally rush tasks at the last minute.",
+      character: "Jack Sparrow"
+    },
+    low: {
+      text: "You may be disorganized, careless, and impulsive.",
+      example: "You often miss appointments and leave tasks unfinished.",
+      character: "Deadpool"
+    }
+  },
+  "Emotional Stability": {
+    high: {
+      text: "You are relaxed, confident, and emotionally stable (calm).",
+      example: "You remained composed during a crisis, making clear decisions.",
+      character: "Superman"
+    },
+    moderatelyHigh: {
+      text: "You tend to stay calm and confident but may occasionally feel stressed.",
+      example: "You handled a tight deadline well, with only brief moments of worry.",
+      character: "Katniss Everdeen"
+    },
+    moderatelyLow: {
+      text: "You manage stress fairly well but sometimes feel anxious or moody.",
+      example: "You completed most tasks under pressure but had moments of doubt.",
+      character: "Frodo Baggins"
+    },
+    low: {
+      text: "You may be anxious, moody, and easily upset.",
+      example: "You often react strongly to criticism and withdraw when upset.",
+      character: "Sheldon Cooper"
+    }
+  },
+  Openness: {
+    high: {
+      text: "You are curious, imaginative, reflective, and creative (open to new experiences).",
+      example: "You designed an original art project exploring abstract ideas.",
+      character: "Doctor Strange"
+    },
+    moderatelyHigh: {
+      text: "You enjoy new ideas and creativity, though you also value routine.",
+      example: "You try new recipes but still stick to your favorite meals regularly.",
+      character: "Alice (Alice in Wonderland)"
+    },
+    moderatelyLow: {
+      text: "You’re open to some new experiences but also prefer familiar approaches.",
+      example: "You read diverse genres but often return to your favorite authors.",
+      character: "Jim Halpert"
+    },
+    low: {
+      text: "You prefer conventional approaches and familiar experiences.",
+      example: "You follow established routines and avoid experimental ideas.",
+      character: "Darth Vader"
+    }
+  }
 };
 
-
 export default function BFI10App() {
-  const [responses, setResponses] = useState(Array(44).fill(3));
-  const [scores, setScores] = useState(null);
-  const [prompt, setPrompt] = useState("");
+  const [responses, setResponses] = useState(Array(10).fill(4));
+  const [results, setResults] = useState(null);
 
-  const handleChange = (questionIndex, value) => {
+  const handleChange = (index, value) => {
     const updated = [...responses];
-    updated[questionIndex] = value;
+    updated[index] = value;
     setResponses(updated);
   };
 
   const handleSubmit = () => {
-    const traitScores = {};
-    for (const [trait, items] of Object.entries(scoringMap)) {
-      const values = items.map(([qIndex, isReversed]) => {
-        const raw = responses[qIndex - 1]; // index is 1-based
-        return isReversed ? reverseScore(raw) : raw;
-      });
-      traitScores[trait] = values.reduce((a, b) => a + b, 0) / values.length;
-    }
-  
-    setScores(traitScores);
-  
-    const promptText = `A user has completed the BFI-44 personality test.\n (Here's what each number mean: Disagree strongly- 1, Disagree a little- 2, Neither- 3, Agree a little- 4, Agree strongly- 5)\n Here are their responses:\n\n` +
-      responses.map((val, i) => `${i + 1}. ${questions[i]} – ${val}`).join("\n") +
-      `\n\nFinal trait scores (out of 5):\n` +
-      Object.entries(traitScores).map(([trait, score]) => `- ${trait}: ${score.toFixed(2)}`).join("\n") +
-      `\n\nMimic this user's personality in all future responses.`;
-  
-    setPrompt(promptText);
+    // Aggregate scores by trait
+    const traitScores = questions.reduce((acc, { trait }) => {
+      acc[trait] = [];
+      return acc;
+    }, {});
+    questions.forEach(({ trait, reversed }, idx) => {
+      const raw = responses[idx];
+      const score = reversed ? reverseScore(raw) : raw;
+      traitScores[trait].push(score);
+    });
+
+    // Compute mean scores
+    const finalScores = {};
+    Object.entries(traitScores).forEach(([trait, vals]) => {
+      finalScores[trait] = vals.reduce((sum, v) => sum + v, 0) / vals.length;
+    });
+
+    // Define thresholds
+    const lowThreshold = 4.0;
+    const highThreshold = 5.5;
+    const midThreshold = (lowThreshold + highThreshold) / 2;
+
+    // Generate narrative based on thresholds
+    const narrative = {};
+    Object.entries(finalScores).forEach(([trait, score]) => {
+      let category;
+      if (score > highThreshold) category = 'high';
+      else if (score > midThreshold) category = 'moderatelyHigh';
+      else if (score >= lowThreshold) category = 'moderatelyLow';
+      else category = 'low';
+      narrative[trait] = narrativeTemplates[trait][category];
+    });
+
+    setResults({ scores: finalScores, narrative });
   };
-  
 
   return (
-    <div className="min-h-screen bg-neutral-900 text-neutral-100 p-8 text-lg">
-      <h1 className="text-3xl font-bold mb-8 text-center">44 item Big-5 Personality Test</h1>
-
-      <div className="overflow-x-auto">
-        <table className="table-auto w-full text-base border-collapse">
-          <thead className="bg-neutral-900 text-neutral-100">
-            <tr className="border-b border-gray-700">
-              <th className="text-left px-4 py-3">I see myself as someone who…</th>
-              {[1, 2, 3, 4, 5].map((val) => (
-                <th key={val} className="px-4 py-3 text-center font-bold text-neutral-200">{val}</th>
-              ))}
-            </tr>
-            <tr className="text-sm text-neutral-100 bg-neutral-800 border-t border-neutral-700">
-              <td></td>
-              <td className="text-center">Disagree strongly</td>
-              <td className="text-center">Disagree a little</td>
-              <td className="text-center">Neither</td>
-              <td className="text-center">Agree a little</td>
-              <td className="text-center">Agree strongly</td>
-            </tr>
-          </thead>
-          <tbody>
-            {questions.map((q, i) => (
-              <tr key={i} className="border-b border-neutral-700 hover:bg-neutral-800">
-                <td className="px-4 py-4">
-                {i + 1}. <span className="text-neutral-400">I see myself as someone who...</span> {q}
-                </td>
-                {[1, 2, 3, 4, 5].map((val) => (
-                  <td key={val} className="text-center px-4 py-4">
-                    <input
-                    type="radio"
-                    name={`q${i}`}
-                    value={val}
-                    checked={responses[i] === val}
-                    onChange={() => handleChange(i, val)}
-                    className="accent-blue-400 w-5 h-5"
-                    />
-                  </td>
-                ))}
-              </tr>
+    <div className="min-h-screen bg-neutral-900 text-neutral-100 p-8">
+      <h1 className="text-3xl font-bold mb-6 text-center">Ten-item Big Five Personality Test (TIPI)</h1>
+      <div className="space-y-4">
+        {questions.map(({ text }, i) => (
+          <div key={i} className="flex items-center">
+            <span className="mr-4 w-1/3">{i+1}. I see myself as: {text}</span>
+            {[1,2,3,4,5,6,7].map(val => (
+              <label key={val} className="mx-2">
+                <input
+                  type="radio"
+                  name={`q${i}`}
+                  value={val}
+                  checked={responses[i] === val}
+                  onChange={() => handleChange(i, val)}
+                  className="accent-blue-400"
+                />
+                <span className="ml-1">{val}</span>
+              </label>
             ))}
-          </tbody>
-        </table>
+          </div>
+        ))}
       </div>
-
-      <div className="flex justify-center mt-10">
-        <button
-          onClick={handleSubmit}
-          className="bg-blue-500 hover:bg-blue-600 text-white px-8 py-3 rounded-lg text-lg"
-        >
-          Submit & Generate Prompt
+      <div className="flex justify-center mt-8">
+        <button onClick={handleSubmit} className="bg-blue-500 px-6 py-3 rounded text-white">
+          Compute Scores & Narrative
         </button>
       </div>
 
-      {scores && (
-        <div className="mt-10">
-          <h2 className="text-2xl font-semibold mb-2">Trait Scores</h2>
-          <ul className="list-disc list-inside text-lg">
-            {Object.entries(scores).map(([trait, val]) => (
-              <li key={trait}>{trait}: {val.toFixed(1)}</li>
-            ))}
-          </ul>
-        </div>
-      )}
-
-      {prompt && (
-        <div className="mt-10">
-          <h2 className="text-2xl font-semibold mb-2">Generated Prompt</h2>
-          <textarea
-            readOnly
-            value={prompt}
-            className="w-full h-80 bg-gray-800 border border-gray-600 p-4 rounded-lg text-white font-mono"
-          />
+      {results && (
+        <div className="mt-8 space-y-8">
+          <h2 className="text-2xl font-semibold">Results</h2>
+          {Object.entries(results.scores).map(([trait, score]) => (
+            <div key={trait} className="bg-neutral-800 p-4 rounded">
+              <h3 className="text-xl mb-2">{trait}: {score.toFixed(2)}</h3>
+              <p>{results.narrative[trait].text}</p>
+              <p className="mt-1"><strong>Example:</strong> {results.narrative[trait].example}</p>
+              <p className="mt-1"><strong>Counterpart:</strong> {results.narrative[trait].character}</p>
+            </div>
+          ))}
         </div>
       )}
     </div>
